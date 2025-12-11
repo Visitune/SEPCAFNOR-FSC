@@ -3,648 +3,510 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diagnostic Culture Sécurité des Aliments (AFNOR SPEC 2406)</title>
+    <title>Diagnostic Culture Sécurité des Aliments - AFNOR SPEC 2406</title>
     
-    <!-- Polices et Icones -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
-    <!-- Bibliothèques JS (Chart.js pour le graph, html2pdf pour l'export) -->
+    <!-- Chart.js pour le graphique -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- FontAwesome pour les icônes -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Police Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary: #6b21a8; /* Violet AFNOR/Document */
-            --secondary: #a855f7;
-            --accent: #fcd34d; /* Touche jaune/dorée du document */
-            --bg: #f3f4f6;
-            --card-bg: #ffffff;
-            --text: #1f2937;
-            --text-light: #6b7280;
-            --success: #10b981;
-            --danger: #ef4444;
+            --afnor-purple: #4a148c; /* Violet sombre inspiré du document */
+            --afnor-light-purple: #7c43bd;
+            --afnor-gold: #fbbf24;
+            --bg-color: #f8f9fa;
+            --text-color: #333;
+            --white: #ffffff;
+            --border-radius: 8px;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
             padding: 0;
-            line-height: 1.6;
         }
 
-        /* Header Modern */
+        /* --- HEADER --- */
         header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--afnor-purple), var(--afnor-light-purple));
             color: white;
-            padding: 2rem 1rem;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(107, 33, 168, 0.2);
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        header p {
-            opacity: 0.9;
-            margin-top: 0.5rem;
-        }
-
-        /* Container */
-        .container {
-            max-width: 900px;
-            margin: -2rem auto 2rem;
-            padding: 0 1rem;
-            position: relative;
-            z-index: 10;
-        }
-
-        /* Cards */
-        .card {
-            background: var(--card-bg);
-            border-radius: 16px;
             padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid #f3f4f6;
-            padding-bottom: 1rem;
+        header h1 { margin: 0; font-size: 1.8rem; }
+        header p { opacity: 0.9; margin-top: 5px; }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 15px;
         }
 
-        .section-title {
-            font-size: 1.25rem;
-            color: var(--primary);
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* Advice Accordion */
-        .advice-box {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
+        /* --- ACCORDEON STYLES --- */
+        .accordion-item {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             overflow: hidden;
-            margin-bottom: 1.5rem;
+            border: 1px solid #e0e0e0;
         }
 
-        .advice-toggle {
-            background: #eef2ff;
-            color: var(--primary);
-            padding: 0.75rem 1rem;
+        .accordion-header {
+            background-color: var(--white);
+            padding: 15px 20px;
             cursor: pointer;
-            font-weight: 600;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: background 0.3s;
         }
 
-        .advice-content {
-            padding: 1rem;
+        .accordion-header:hover {
+            background-color: #f3e5f5;
+        }
+
+        .accordion-header.active {
+            background-color: #ede7f6;
+            border-bottom: 2px solid var(--afnor-light-purple);
+        }
+
+        .accordion-title {
+            font-weight: 700;
+            color: var(--afnor-purple);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .accordion-icon {
+            transition: transform 0.3s;
+        }
+
+        .accordion-header.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Contenu caché par défaut */
+        .accordion-content {
             display: none;
+            padding: 20px;
+            background-color: #fff;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .accordion-content.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- CONSEILS BOX --- */
+        .tips-box {
+            background-color: #fffbeb;
+            border-left: 5px solid var(--afnor-gold);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
             font-size: 0.9rem;
         }
+        .tips-title { font-weight: bold; color: #b45309; margin-bottom: 5px; display: block; }
 
-        .advice-content.active {
-            display: block;
-            animation: fadeIn 0.3s;
+        /* --- QUESTIONS SLIDERS --- */
+        .question-row {
+            margin-bottom: 25px;
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 15px;
         }
 
-        .advice-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .good-practice { color: var(--success); }
-        .bad-practice { color: var(--danger); }
-
-        /* Sliders */
-        .question-item {
-            margin-bottom: 2rem;
-        }
-
-        .question-text {
+        .question-label {
             font-weight: 500;
-            margin-bottom: 0.5rem;
+            margin-bottom: 10px;
             display: block;
         }
 
-        .slider-container {
+        .range-wrap {
             position: relative;
-            margin-top: 1rem;
+            margin: 0 auto 1rem;
         }
 
         input[type=range] {
             width: 100%;
-            -webkit-appearance: none;
-            background: transparent;
-        }
-
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 24px;
-            width: 24px;
-            border-radius: 50%;
-            background: var(--primary);
             cursor: pointer;
-            margin-top: -10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-            transition: transform 0.1s;
-        }
-
-        input[type=range]::-webkit-slider-thumb:hover {
-            transform: scale(1.1);
-        }
-
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 4px;
-            cursor: pointer;
-            background: #e5e7eb;
-            border-radius: 2px;
+            accent-color: var(--afnor-purple);
         }
 
         .range-labels {
             display: flex;
             justify-content: space-between;
-            font-size: 0.75rem;
-            color: var(--text-light);
-            margin-top: 0.5rem;
-        }
-
-        .score-display {
-            position: absolute;
-            right: 0;
-            top: -25px;
-            background: var(--accent);
-            padding: 2px 8px;
-            border-radius: 12px;
             font-size: 0.8rem;
-            font-weight: bold;
-            color: var(--text);
+            color: #777;
         }
 
-        /* Result Section */
-        #result-section {
-            display: none;
-            text-align: center;
+        .score-badge {
+            background: var(--afnor-purple);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            float: right;
         }
 
-        .chart-container {
-            position: relative;
-            height: 400px;
+        /* --- ACTION BUTTONS --- */
+        .btn-action {
+            display: block;
             width: 100%;
-            margin: auto;
-        }
-
-        /* Buttons */
-        .btn {
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            padding: 15px;
+            background-color: var(--afnor-purple);
             color: white;
             border: none;
-            padding: 1rem 2rem;
             border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
+            font-size: 1.1rem;
             cursor: pointer;
-            transition: opacity 0.2s, transform 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 4px 12px rgba(107, 33, 168, 0.3);
+            margin-top: 30px;
+            margin-bottom: 50px;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .btn:hover {
-            opacity: 0.9;
+        .btn-action:hover {
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 20, 140, 0.4);
         }
 
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            box-shadow: none;
+        /* --- VUE RAPPORT (Initialement cachée) --- */
+        #report-view {
+            display: none;
+            background: white;
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
 
-        /* Animation */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Print/PDF Specifics */
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white; }
-            .container { margin: 0; max-width: 100%; box-shadow: none; }
-            .card { box-shadow: none; border: 1px solid #eee; break-inside: avoid; }
-            .advice-box { display: none; } /* On cache les conseils dans le rapport PDF pour gagner de la place */
-        }
-
-        /* Footer */
-        footer {
+        .report-header {
             text-align: center;
-            padding: 2rem;
-            color: var(--text-light);
-            font-size: 0.85rem;
+            border-bottom: 2px solid var(--afnor-gold);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .score-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--afnor-purple);
+        }
+        
+        .global-score {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--afnor-purple);
+            margin: 20px 0;
+        }
+
+        .btn-print {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        /* Mode Impression pour avoir un "PDF" propre via le navigateur */
+        @media print {
+            body { background: white; }
+            #audit-form-container, .btn-action, .no-print { display: none !important; }
+            #report-view { display: block !important; box-shadow: none; margin: 0; padding: 0; }
+            .report-grid { grid-template-columns: 1fr 1fr; } /* Force 2 colonnes */
+            header { background: white; color: black; border-bottom: 1px solid #000; padding: 10px; }
+            header h1 { font-size: 1.5rem; }
+            .container { max-width: 100%; margin: 0; width: 100%; }
+        }
+
+        @media (max-width: 600px) {
+            .report-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <header id="app-header">
-        <h1><i class="fas fa-shield-alt"></i> Diagnostic Food Safety Culture</h1>
-        <p>Basé sur le guide AFNOR SPEC 2406 - Décembre 2025</p>
-    </header>
+<header>
+    <h1><i class="fas fa-chart-line"></i> FSC Manager</h1>
+    <p>Outil d'évaluation - AFNOR SPEC 2406 (Décembre 2025)</p>
+</header>
 
-    <div class="container" id="app-content">
-        
-        <!-- Introduction -->
-        <div class="card">
-            <h2>Bienvenue</h2>
-            <p>Cet outil vous permet d'auto-évaluer la maturité de votre culture de la sécurité des aliments selon les 5 axes définis dans le guide AFNOR. Répondez aux affirmations en utilisant les curseurs (de 1 à 5).</p>
-            <div style="background: #eef2ff; padding: 10px; border-radius: 8px; font-size: 0.9rem;">
-                <i class="fas fa-info-circle"></i> <strong>Échelle :</strong> 1 = Pas du tout d'accord, 5 = Tout à fait d'accord.
-            </div>
+<div class="container">
+
+    <!-- Formulaire d'audit -->
+    <div id="audit-form-container">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <p>Veuillez dérouler chaque section pour évaluer les pratiques de votre organisation.</p>
         </div>
-
-        <form id="audit-form">
-            <!-- Les sections seront générées ici par JS -->
+        
+        <form id="fscForm">
+            <!-- Les accordéons seront générés ici par JS -->
         </form>
 
-        <div style="text-align: center; margin-bottom: 3rem;">
-            <button type="button" class="btn" onclick="generateReport()">
-                <i class="fas fa-chart-pie"></i> Générer le Rapport
-            </button>
-        </div>
-
-        <!-- Section Résultats (Cachée par défaut) -->
-        <div id="result-section" class="card">
-            <div class="section-header">
-                <span class="section-title">Votre Profil de Culture Sécurité</span>
-                <span style="font-size: 0.9rem; color: var(--text-light)" id="report-date"></span>
-            </div>
-            
-            <div class="chart-container">
-                <canvas id="radarChart"></canvas>
-            </div>
-
-            <div id="analysis-text" style="text-align: left; margin-top: 2rem;">
-                <!-- Analyse générée dynamiquement -->
-            </div>
-
-            <div class="no-print" style="margin-top: 2rem;">
-                <button type="button" class="btn btn-outline" onclick="exportPDF()">
-                    <i class="fas fa-file-pdf"></i> Télécharger en PDF
-                </button>
-                <button type="button" class="btn btn-outline" onclick="window.location.reload()">
-                    <i class="fas fa-redo"></i> Recommencer
-                </button>
-            </div>
-        </div>
-
+        <button type="button" class="btn-action" onclick="generateReport()">
+            <i class="fas fa-file-alt"></i> Voir mon Rapport
+        </button>
     </div>
 
-    <footer>
-        <p>&copy; 2025 - Outil basé sur les données publiques AFNOR SPEC 2406.</p>
-    </footer>
+    <!-- Vue Rapport (Résultats) -->
+    <div id="report-view">
+        <div class="report-header">
+            <h2>Rapport de Culture de la Sécurité des Aliments</h2>
+            <p>Date : <span id="date-display"></span></p>
+        </div>
 
-    <script>
-        // Données basées sur le document AFNOR SPEC 2406
-        const fscData = [
-            {
-                id: "leadership",
-                title: "Leadership & Rôle Moteur",
-                icon: "fa-chess-king",
-                advice: [
-                    "Fixer des objectifs clairs et partagés.",
-                    "La direction doit donner l'exemple (Walk the talk).",
-                    "Traiter rapidement les questions de sécurité."
-                ],
-                errors: [
-                    "Donner l'autorisation de libérer un lot douteux.",
-                    "Ne pas allouer les ressources nécessaires.",
-                    "Ignorer les remontées du terrain."
-                ],
-                questions: [
-                    { id: "RM1", text: "La direction fixe des objectifs clairs en matière de sécurité alimentaire." },
-                    { id: "RM2", text: "La direction fait clairement part de ses attentes à l'égard des salariés." },
-                    { id: "RM3", text: "La direction motive les salariés à travailler dans le respect de la sécurité." },
-                    { id: "RM4", text: "La direction donne l’exemple en matière d’hygiène et de sécurité." },
-                    { id: "RM5", text: "Les questions de sécurité sont traitées rapidement et de manière constructive." },
-                    { id: "RM6", text: "La direction s’efforce d’améliorer constamment la sécurité alimentaire." }
-                ]
-            },
-            {
-                id: "communication",
-                title: "Communication",
-                icon: "fa-comments",
-                advice: [
-                    "Adapter le discours au public (vocabulaire).",
-                    "Instituer des rituels d'échange réguliers.",
-                    "Communiquer sur les réussites, pas que les problèmes."
-                ],
-                errors: [
-                    "Utiliser un jargon trop technique.",
-                    "Limiter la communication à l'encadrement.",
-                    "Être incohérent entre le dire et le faire."
-                ],
-                questions: [
-                    { id: "C1", text: "La direction communique régulièrement avec les salariés sur la sécurité alimentaire." },
-                    { id: "C2", text: "La communication est claire et compréhensible par tous." },
-                    { id: "C3", text: "Il est possible pour les salariés de communiquer vers la direction (remontée)." },
-                    { id: "C4", text: "L’importance de la sécurité est rappelée (affiches, écrans, icônes)." },
-                    { id: "C5", text: "Je peux discuter de problèmes liés à la sécurité avec mes collègues." }
-                ]
-            },
-            {
-                id: "engagement",
-                title: "Implication & Engagement",
-                icon: "fa-hands-helping",
-                advice: [
-                    "Valoriser les progrès et les bonnes initiatives.",
-                    "Encourager le signalement des 'quasi-accidents'.",
-                    "Définir des objectifs individuels liés à la sécurité."
-                ],
-                errors: [
-                    "Chercher un coupable au lieu d'une cause racine.",
-                    "Ignorer les suggestions d'amélioration.",
-                    "Limiter les objectifs à la productivité."
-                ],
-                questions: [
-                    { id: "E1", text: "Je suis convaincu de l’importance de la sécurité alimentaire pour l’organisation." },
-                    { id: "E2", text: "Mes collègues sont convaincus de cette importance." },
-                    { id: "E3", text: "Le travail respectueux de la sécurité est reconnu et récompensé." },
-                    { id: "E4", text: "Je pense que je peux contribuer à la sécurité de nos produits." },
-                    { id: "E5", text: "Je suis motivé(e) pour atteindre le niveau le plus élevé de sécurité." },
-                    { id: "E6", text: "J’ai l’impression de partager la responsabilité de la sécurité." }
-                ]
-            },
-            {
-                id: "sensibilisation",
-                title: "Formation & Sensibilisation",
-                icon: "fa-graduation-cap",
-                advice: [
-                    "Privilégier des mises en situation concrètes.",
-                    "Evaluer l'efficacité des formations à froid.",
-                    "Accompagner la mise en pratique sur le terrain."
-                ],
-                errors: [
-                    "Former uniquement les opérationnels (oublier les bureaux/direction).",
-                    "Ne pas rafraîchir les connaissances (oubli).",
-                    "Considérer la formation comme une fin en soi."
-                ],
-                questions: [
-                    { id: "S1", text: "Je connais les risques liés à la sécurité alimentaire dans mes tâches." },
-                    { id: "S2", text: "Mes collègues connaissent les risques liés à leurs tâches." },
-                    { id: "A3", text: "Mes collègues sont attentifs aux risques potentiels." },
-                    { id: "A4", text: "La direction a une image réaliste des problèmes potentiels." },
-                    { id: "A5", text: "Les risques sont maîtrisés dans mon organisation." }
-                ]
-            },
-            {
-                id: "ressources",
-                title: "Ressources",
-                icon: "fa-tools",
-                advice: [
-                    "Aligner les règles d'hygiène avec l'état des locaux.",
-                    "Intégrer la sécurité des aliments dans les achats d'équipements.",
-                    "Prioriser la maintenance des équipements critiques."
-                ],
-                errors: [
-                    "Sous-estimer le temps nécessaire aux nouvelles procédures.",
-                    "Ne pas avoir de procédure de gestion de crise.",
-                    "Investir sans consulter l'équipe HACCP."
-                ],
-                questions: [
-                    { id: "R1", text: "Les salariés disposent de suffisamment de temps pour respecter les règles." },
-                    { id: "R2", text: "Des effectifs suffisants sont disponibles." },
-                    { id: "R3", text: "L’infrastructure et les équipements permettent de bien travailler." },
-                    { id: "R4", text: "Les ressources financières sont suffisantes (nettoyage, maintenance, labo)." },
-                    { id: "R5", text: "La formation et l'éducation sont suffisantes." },
-                    { id: "R6", text: "De bonnes procédures et instructions sont en place." }
-                ]
-            }
-        ];
+        <div class="global-score">
+            Note Globale : <span id="final-score">0</span> / 5
+        </div>
 
-        // Initialisation de l'application
-        document.addEventListener('DOMContentLoaded', () => {
-            const formContainer = document.getElementById('audit-form');
+        <div class="report-grid">
+            <div>
+                <h3>Analyse Visuelle</h3>
+                <canvas id="radarChart"></canvas>
+            </div>
+            <div>
+                <h3>Détails par Axe</h3>
+                <div id="text-analysis">
+                    <!-- Analyse générée par JS -->
+                </div>
+            </div>
+        </div>
 
-            fscData.forEach(section => {
-                // Création HTML de la section
-                const sectionHTML = `
-                    <div class="card section-card" id="card-${section.id}">
-                        <div class="section-header">
-                            <div class="section-title">
-                                <i class="fas ${section.icon}"></i> ${section.title}
-                            </div>
-                            <div style="font-size:0.8rem; color: var(--primary); font-weight:bold;">
-                                MOYENNE: <span id="avg-${section.id}">-</span>/5
-                            </div>
-                        </div>
+        <div style="margin-top: 30px; padding: 15px; background: #eef2ff; border-radius: 8px;">
+            <h4><i class="fas fa-info-circle"></i> Interprétation</h4>
+            <p style="font-size: 0.9rem;">
+                <strong>< 3/5 :</strong> Culture réactive. Actions correctives nécessaires sur les fondamentaux.<br>
+                <strong>3 - 4/5 :</strong> Culture active. Les systèmes sont en place, l'engagement doit être renforcé.<br>
+                <strong>> 4/5 :</strong> Culture proactive. Amélioration continue et ownership sont acquis.
+            </p>
+        </div>
 
-                        <!-- Accordéon Conseils/Erreurs -->
-                        <div class="advice-box no-print">
-                            <div class="advice-toggle" onclick="toggleAdvice('${section.id}')">
-                                <span><i class="fas fa-lightbulb"></i> Conseils & Points de vigilance</span>
-                                <i class="fas fa-chevron-down" id="icon-${section.id}"></i>
-                            </div>
-                            <div class="advice-content" id="advice-${section.id}">
-                                <div class="advice-grid">
-                                    <div>
-                                        <h4 class="good-practice"><i class="fas fa-check"></i> À faire</h4>
-                                        <ul style="padding-left:1.2rem; font-size:0.85rem;">
-                                            ${section.advice.map(item => `<li>${item}</li>`).join('')}
-                                        </ul>
-                                    </div>
-                                    <div>
-                                        <h4 class="bad-practice"><i class="fas fa-times"></i> À éviter</h4>
-                                        <ul style="padding-left:1.2rem; font-size:0.85rem;">
-                                            ${section.errors.map(item => `<li>${item}</li>`).join('')}
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+        <div class="no-print" style="text-align: center; margin-top: 30px;">
+            <button class="btn-print" onclick="window.print()"><i class="fas fa-print"></i> Imprimer / Enregistrer en PDF</button>
+            <button class="btn-print" style="background: white; color: #333; border: 1px solid #ccc;" onclick="location.reload()">Recommencer</button>
+        </div>
+    </div>
 
-                        <!-- Questions -->
-                        <div class="questions-list">
-                            ${section.questions.map(q => `
-                                <div class="question-item">
-                                    <label class="question-text">${q.id} - ${q.text}</label>
-                                    <div class="slider-container">
-                                        <span class="score-display" id="disp-${q.id}">3</span>
-                                        <input type="range" min="1" max="5" value="3" step="1" 
-                                               id="input-${q.id}" 
-                                               oninput="updateSlider('${q.id}', '${section.id}')">
-                                        <div class="range-labels">
-                                            <span>Pas du tout d'accord</span>
-                                            <span>Neutre</span>
-                                            <span>Tout à fait d'accord</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
+</div>
+
+<script>
+    // --- DONNÉES DU GUIDE AFNOR ---
+    const sections = [
+        {
+            id: 'leadership',
+            title: '1. Capacité de jouer un Rôle Moteur',
+            icon: 'fa-chess-king',
+            tips: "Le leadership ne se limite pas à la direction. Les chefs d'équipe doivent être des relais exemplaires. Attention à la cohérence entre ce qui est dit et les ressources allouées.",
+            questions: [
+                "R.M1 - La direction fixe des objectifs clairs en matière de sécurité alimentaire.",
+                "R.M2 - La direction fait clairement part de ses attentes à l'égard des salariés.",
+                "R.M3 - La direction motive les salariés à travailler dans le respect de la sécurité.",
+                "R.M4 - La direction donne l’exemple (Walk the talk).",
+                "R.M5 - Les questions de sécurité sont traitées rapidement et constructivement.",
+                "R.M6 - La direction s’efforce d’améliorer constamment la sécurité."
+            ]
+        },
+        {
+            id: 'communication',
+            title: '2. Communication',
+            icon: 'fa-bullhorn',
+            tips: "La communication doit être bidirectionnelle. Les salariés doivent pouvoir remonter les problèmes sans peur de sanction. Utilisez des visuels simples.",
+            questions: [
+                "C.1 - La communication sur la sécurité est régulière.",
+                "C.2 - La communication est claire et compréhensible par tous.",
+                "C.3 - Les salariés peuvent communiquer leurs doutes à la direction.",
+                "C.4 - L'affichage (visuel) sur la sécurité est présent en permanence.",
+                "C.5 - On peut discuter des problèmes de sécurité entre collègues."
+            ]
+        },
+        {
+            id: 'implication',
+            title: '3. Implication et Engagement',
+            icon: 'fa-users',
+            tips: "L'implication se mesure quand la direction a le dos tourné. Valorisez les initiatives positives et ne cherchez pas uniquement des coupables.",
+            questions: [
+                "E.1 - Je suis convaincu de l’importance de la sécurité alimentaire.",
+                "E.2 - Mes collègues en sont aussi convaincus.",
+                "E.3 - Le travail bien fait (sécurité) est reconnu et récompensé.",
+                "E.4 - Je pense que je peux contribuer à la sécurité des produits.",
+                "E.5 - Je suis motivé(e) pour atteindre un haut niveau de sécurité."
+            ]
+        },
+        {
+            id: 'sensibilisation',
+            title: '4. Sensibilisation & Compétences',
+            icon: 'fa-brain',
+            tips: "La formation ne suffit pas, il faut vérifier l'acquisition des compétences sur le terrain. Attention à la courbe de l'oubli.",
+            questions: [
+                "S.1 - Je connais les risques liés à mes tâches spécifiques.",
+                "S.2 - Mes collègues connaissent leurs risques.",
+                "S.3 - Nous sommes attentifs aux problèmes potentiels.",
+                "S.4 - La direction a une image réaliste des risques terrain.",
+                "S.5 - Les risques sont globalement maîtrisés."
+            ]
+        },
+        {
+            id: 'ressources',
+            title: '5. Ressources & Moyens',
+            icon: 'fa-tools',
+            tips: "Rien ne sert d'exiger l'hygiène si les sols sont cassés ou le matériel inadapté. Le budget maintenance est un indicateur clé de culture.",
+            questions: [
+                "R.1 - Nous avons assez de temps pour travailler en sécurité.",
+                "R.2 - Les effectifs sont suffisants.",
+                "R.3 - L’infrastructure et les équipements sont en bon état.",
+                "R.4 - Les ressources financières sont suffisantes (nettoyage, labo...).",
+                "R.5 - Les procédures et instructions sont claires et disponibles."
+            ]
+        }
+    ];
+
+    // --- GÉNÉRATION DU FORMULAIRE ---
+    const formContainer = document.getElementById('fscForm');
+    
+    sections.forEach((sec, index) => {
+        let questionsHTML = sec.questions.map((q, qIndex) => `
+            <div class="question-row">
+                <label class="question-label">${q}</label>
+                <div class="range-wrap">
+                    <span class="score-badge" id="val-${sec.id}-${qIndex}">3/5</span>
+                    <input type="range" min="1" max="5" step="1" value="3" 
+                           name="${sec.id}" 
+                           oninput="document.getElementById('val-${sec.id}-${qIndex}').innerText = this.value + '/5'">
+                    <div class="range-labels">
+                        <span>Pas du tout d'accord</span>
+                        <span>Neutre</span>
+                        <span>Tout à fait d'accord</span>
                     </div>
-                `;
-                formContainer.insertAdjacentHTML('beforeend', sectionHTML);
-            });
+                </div>
+            </div>
+        `).join('');
 
-            // Date du jour
-            document.getElementById('report-date').innerText = new Date().toLocaleDateString('fr-FR');
+        let html = `
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span class="accordion-title"><i class="fas ${sec.icon}"></i> ${sec.title}</span>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </div>
+                <div class="accordion-content">
+                    <div class="tips-box">
+                        <span class="tips-title"><i class="fas fa-lightbulb"></i> Le conseil du Guide :</span>
+                        ${sec.tips}
+                    </div>
+                    ${questionsHTML}
+                </div>
+            </div>
+        `;
+        formContainer.insertAdjacentHTML('beforeend', html);
+    });
+
+    // --- LOGIQUE ACCORDEON ---
+    function toggleAccordion(header) {
+        const content = header.nextElementSibling;
+        
+        // Fermer les autres (optionnel, pour garder propre)
+        document.querySelectorAll('.accordion-content').forEach(c => {
+            if (c !== content) {
+                c.classList.remove('show');
+                c.previousElementSibling.classList.remove('active');
+            }
         });
 
-        // Gestion de l'affichage des conseils
-        function toggleAdvice(id) {
-            const content = document.getElementById(`advice-${id}`);
-            const icon = document.getElementById(`icon-${id}`);
-            if (content.classList.contains('active')) {
-                content.classList.remove('active');
-                icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
-            } else {
-                content.classList.add('active');
-                icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
-            }
-        }
+        header.classList.toggle('active');
+        content.classList.toggle('show');
+    }
 
-        // Mise à jour visuelle du slider et calcul de la moyenne de section
-        function updateSlider(inputId, sectionId) {
-            const val = document.getElementById(`input-${inputId}`).value;
-            document.getElementById(`disp-${inputId}`).innerText = val;
-            calculateSectionAverage(sectionId);
-        }
+    // --- GÉNÉRATION RAPPORT ---
+    function generateReport() {
+        // 1. Calculs
+        const scores = [];
+        const labels = [];
+        let totalSum = 0;
+        let totalCount = 0;
+        let detailsHTML = '';
 
-        function calculateSectionAverage(sectionId) {
-            const section = fscData.find(s => s.id === sectionId);
-            let total = 0;
-            section.questions.forEach(q => {
-                total += parseInt(document.getElementById(`input-${q.id}`).value);
-            });
-            const avg = (total / section.questions.length).toFixed(1);
-            document.getElementById(`avg-${sectionId}`).innerText = avg;
-            return avg;
-        }
-
-        // Logique principale de génération du rapport
-        let radarChartInstance = null;
-
-        function generateReport() {
-            // 1. Calculer les moyennes finales
-            const scores = fscData.map(section => {
-                return parseFloat(calculateSectionAverage(section.id));
-            });
-
-            const labels = fscData.map(s => s.title);
-
-            // 2. Afficher la section résultat
-            document.getElementById('result-section').style.display = 'block';
+        sections.forEach(sec => {
+            const inputs = document.getElementsByName(sec.id);
+            let sum = 0;
+            inputs.forEach(inp => sum += parseInt(inp.value));
+            let avg = (sum / inputs.length).toFixed(1);
             
-            // Scroll vers le résultat
-            document.getElementById('result-section').scrollIntoView({ behavior: 'smooth' });
+            scores.push(avg);
+            labels.push(sec.title.split('. ')[1]); // Juste le titre sans le numéro
+            totalSum += parseFloat(avg);
+            totalCount++;
 
-            // 3. Générer le graphique Radar
-            const ctx = document.getElementById('radarChart').getContext('2d');
-            
-            if (radarChartInstance) {
-                radarChartInstance.destroy();
-            }
+            // Génération bloc détail
+            let colorClass = avg >= 4 ? '#2e7d32' : (avg >= 3 ? '#f57f17' : '#c62828');
+            detailsHTML += `
+                <div class="score-card" style="margin-bottom:10px; border-left-color:${colorClass}">
+                    <strong>${sec.title}</strong>
+                    <div style="float:right; font-weight:bold; color:${colorClass}">${avg}/5</div>
+                </div>
+            `;
+        });
 
-            radarChartInstance = new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Maturité FSC (Niveau 1 à 5)',
-                        data: scores,
-                        fill: true,
-                        backgroundColor: 'rgba(107, 33, 168, 0.2)',
-                        borderColor: 'rgb(107, 33, 168)',
-                        pointBackgroundColor: 'rgb(252, 211, 77)',
-                        pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: 'rgb(107, 33, 168)'
-                    }]
-                },
-                options: {
-                    elements: {
-                        line: { borderWidth: 3 }
-                    },
-                    scales: {
-                        r: {
-                            angleLines: { display: true },
-                            suggestedMin: 0,
-                            suggestedMax: 5,
-                            ticks: { stepSize: 1 }
-                        }
-                    },
-                    plugins: {
-                        legend: { position: 'bottom' }
+        let finalScore = (totalSum / totalCount).toFixed(1);
+
+        // 2. DOM Manipulation
+        document.getElementById('audit-form-container').style.display = 'none';
+        document.getElementById('report-view').style.display = 'block';
+        
+        document.getElementById('date-display').innerText = new Date().toLocaleDateString('fr-FR');
+        document.getElementById('final-score').innerText = finalScore;
+        document.getElementById('text-analysis').innerHTML = detailsHTML;
+
+        // 3. Chart.js
+        const ctx = document.getElementById('radarChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Maturité FSC',
+                    data: scores,
+                    backgroundColor: 'rgba(74, 20, 140, 0.2)',
+                    borderColor: 'rgba(74, 20, 140, 1)',
+                    pointBackgroundColor: '#fbbf24',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    r: {
+                        suggestedMin: 0,
+                        suggestedMax: 5,
+                        ticks: { stepSize: 1 }
                     }
                 }
-            });
-
-            // 4. Générer le texte d'analyse sommaire
-            generateAnalysisText(scores);
-        }
-
-        function generateAnalysisText(scores) {
-            const totalAvg = (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1);
-            let html = `<h3>Synthèse Globale : ${totalAvg} / 5</h3>`;
-            
-            if (totalAvg >= 4) {
-                html += `<p style="color:var(--success)"><strong>Excellent niveau !</strong> Votre culture sécurité est proactive et bien ancrée. Continuez à maintenir cette dynamique.</p>`;
-            } else if (totalAvg >= 3) {
-                html += `<p style="color:#d97706"><strong>Niveau Intermédiaire.</strong> Les bases sont là, mais l'homogénéité ou l'implication totale reste à parfaire. Regardez les axes les plus faibles.</p>`;
-            } else {
-                html += `<p style="color:var(--danger)"><strong>Niveau à renforcer.</strong> Plusieurs axes nécessitent une action prioritaire de la direction et des ressources.</p>`;
             }
+        });
 
-            // Identifier points forts et faibles
-            let minScore = Math.min(...scores);
-            let maxScore = Math.max(...scores);
-            
-            const pointsForts = fscData.filter((_, i) => scores[i] === maxScore).map(s => s.title).join(", ");
-            const pointsFaibles = fscData.filter((_, i) => scores[i] === minScore).map(s => s.title).join(", ");
+        // Scroll top
+        window.scrollTo(0, 0);
+    }
+</script>
 
-            html += `<p><strong>Points Forts :</strong> ${pointsForts}</p>`;
-            html += `<p><strong>Axes d'amélioration prioritaires :</strong> ${pointsFaibles}</p>`;
-
-            document.getElementById('analysis-text').innerHTML = html;
-        }
-
-        // Export PDF
-        function exportPDF() {
-            const element = document.body;
-            // On cache temporairement les boutons et l'accordéon pour le PDF
-            const opt = {
-                margin:       [10, 10, 10, 10],
-                filename:     'Rapport_FSC_AFNOR_SPEC_2406.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            // Astuce : On sélectionne le contenu principal
-            const content = document.getElementById('app-content');
-
-            html2pdf().set(opt).from(content).save();
-        }
-    </script>
 </body>
 </html>
